@@ -6,6 +6,7 @@ import { useWriteContract, useWaitForTransactionReceipt, useAccount } from "wagm
 import { ABI, contractAddress } from "@/utils/contractDetails";
 import * as cryptojs from 'crypto-js';
 import { LoaderCircle, CheckCircle2, XCircle } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
 
 interface MovieDetails {
     movieName: string;
@@ -39,6 +40,8 @@ interface UploadProgress {
 
 
 const MovieUpload = () => {
+
+    const navigate = useNavigate();
     const [details, setDetails] = useState<MovieDetails>({
         movieName: "",
         movieDescription: "",
@@ -242,6 +245,7 @@ const MovieUpload = () => {
         <div className="flex flex-col items-center justify-center h-screen text-red-500">
             <XCircle className="w-16 h-16 mb-4" />
             <p>Error while uploading</p>
+            <div><button onClick={() => navigate('/home')}>Home</button></div>
         </div>
     );
 
@@ -249,6 +253,7 @@ const MovieUpload = () => {
         <div className="flex flex-col items-center justify-center h-screen text-green-500">
             <CheckCircle2 className="w-16 h-16 mb-4" />
             <p>Uploaded Successfully</p>
+            <div><button onClick={() => navigate('/home')}>Home</button></div>
         </div>
     );
 
@@ -300,7 +305,7 @@ const MovieUpload = () => {
                         </div>
                         <FileUploadField
                             label="Upload Movie"
-                            onChange={(e) => changeFileHandler(e, 'movie')}
+                            onChange={(e : any) => changeFileHandler(e, 'movie')}
                             preview={previews.movie}
                             onRemove={() => removeFile('movie')}
                             accept="video/*"
@@ -336,7 +341,7 @@ const MovieUpload = () => {
                         </div>
                         <FileUploadField
                             label="Upload Trailer"
-                            onChange={(e) => changeFileHandler(e, 'trailer')}
+                            onChange={(e : any) => changeFileHandler(e, 'trailer')}
                             preview={previews.trailer}
                             onRemove={() => removeFile('trailer')}
                             accept="video/*"
@@ -372,7 +377,7 @@ const MovieUpload = () => {
                         </div>
                         <FileUploadField
                             label="Movie Poster"
-                            onChange={(e) => changeFileHandler(e, 'poster')}
+                            onChange={(e : any) => changeFileHandler(e, 'poster')}
                             preview={previews.poster}
                             onRemove={() => removeFile('poster')}
                             accept="image/*"

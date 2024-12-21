@@ -27,7 +27,6 @@ const LandingPage = () => {
   if (error) {
     return <div>{error}...</div>
   }
-
   else {
     return (
       <div className="w-full flex flex-col">

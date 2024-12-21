@@ -1,4 +1,3 @@
-import React from "react";
 import Footer from "@/components/Footer";
 import MovieCard from "@/components/MovieCard";
 import Navbar from "@/components/Navbar";
@@ -66,7 +65,7 @@ const LandingPage = () => {
             </button>
           </div>
           <div className="flex w-full gap-5 mt-5">
-            {data?.map((poster, index) => (
+            {(data as any[])?.map((poster, index) => (
               <MovieCard
                 key={index}
                 video={{

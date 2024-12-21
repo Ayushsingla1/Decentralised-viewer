@@ -1,0 +1,23 @@
+.trouble {
+    color: #ff4d4d; /* Softer but still alarming red */
+    font-size: 2.5rem; /* Bigger font for emphasis */
+    font-weight: bold; /* Strong text presence */
+    text-align: center; /* Center the text */
+    text-transform: uppercase; /* Make it bold and urgent */
+    letter-spacing: 2px; /* Add spacing for clarity */
+    background: linear-gradient(90deg, #ff4d4d, #ff9999); /* Gradient for a dynamic look */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; /* Makes gradient text */
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.8), 0 0 20px rgba(255, 77, 77, 0.6); /* Glowing effect */
+    animation: pulse 1.5s infinite; /* Gentle pulsing animation */
+}
+
+/* Pulse animation for subtle urgency */
+@keyframes pulse {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(255, 77, 77, 0.8), 0 0 20px rgba(255, 77, 77, 0.6);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(255, 77, 77, 1), 0 0 30px rgba(255, 77, 77, 0.8);
+    }
+}

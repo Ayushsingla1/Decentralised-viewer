@@ -8,7 +8,7 @@ interface MovieInfoProps {
   imdbRating: string;
   description: string;
   posterUrl: string;
-  id : string
+  id : string | undefined
 }
 
 const MovieInfo: React.FC<MovieInfoProps> = ({

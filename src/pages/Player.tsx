@@ -8,13 +8,13 @@ import { ABI, contractAddress } from "@/utils/contractDetails";
 import * as cryptojs from 'crypto-js';
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import "../utils/loader.css"
 
 const Player = () => {
 
   const { address } = useAccount();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   let { id } = useParams();
 
 
@@ -91,15 +91,9 @@ const Player = () => {
 
   useEffect(() => {
 
-    if (!isPending && !decryptedVideoUrl && data && data[0]?.result?.ipfsHash) {
-      // console.log(data[3].result)
-      // if (data[3].result === false) {
-      //   console.log("not owned")
-      //   navigate(`/payment/${id}`)
-      // }
-
+    if (!isPending && !decryptedVideoUrl && data && (data as any[])[0]?.result?.ipfsHash) {
       console.log("user movies is : ", data[3])
-      const ipfsHash = data[0].result.ipfsHash;
+      const ipfsHash = (data as any[])[0].result.ipfsHash;
 
       decryptAndFetchFile(ipfsHash, password);
     }
@@ -124,10 +118,10 @@ const Player = () => {
       <Navbar />
       <div className="flex flex-col gap-y-12 justify-center items-center">
         <div className="flex flex-col w-full relative items-center bg-[#292929] h-[140vh]">
-          <img src={`https://maroon-fashionable-warbler-188.mypinata.cloud/ipfs/${data[1].result.ipfsHash.replace("ipfs://", "")}?pinataGatewayToken=gVQfpvbN3IXW52kARQuLO50y78ginsP31oSkPQT78K23fingxRmnt7u0tHk2lnFk`} className="w-full absolute blur-3xl h-[90vh]" alt="Background Blur" />
+          <img src={`https://maroon-fashionable-warbler-188.mypinata.cloud/ipfs/${(data as any[])[1].result.ipfsHash.replace("ipfs://", "")}?pinataGatewayToken=gVQfpvbN3IXW52kARQuLO50y78ginsP31oSkPQT78K23fingxRmnt7u0tHk2lnFk`} className="w-full absolute blur-3xl h-[90vh]" alt="Background Blur" />
           <div className="flex pt-10 gap-y-6 flex-col absolute top-0 w-full justify-center items-center">
             <div className="flex gap-x-2 text-white justify-center items-center">
-              <span className="font-hanalei text-4xl">{data[1].result.name}</span>
+              <span className="font-hanalei text-4xl">{(data as any[])[1].result.name}</span>
               <div className="border border-[#1EFF00] rounded-full px-3 py-1">
                 <span className="font-hanalei text-xl">Owner:</span>
                 <span className="font-hanalei text-xl">0xb8B0C320ED4b7F9Fda8A2408F4C4044Bc5C8Bf41</span>
@@ -147,12 +141,13 @@ const Player = () => {
 
             <div className="w-full justify-center items-center flex bottom-[0] font-hanalei">
               <MovieInfo
-                title={data[1].result.name}
+                title={(data as any[])[1].result.name}
                 owner="0xb8B0C320ED4b7F9Fda8A2408F4C4044Bc5C8Bf41"
-                amount={data[1].result.price.toString()}
+                amount={(data as any[])[1].result.price.toString()}
                 imdbRating="8.8/10"
-                description={data[1].result.description}
-                posterUrl={`https://maroon-fashionable-warbler-188.mypinata.cloud/ipfs/${data[1].result.ipfsHash.replace("ipfs://", "")}?pinataGatewayToken=gVQfpvbN3IXW52kARQuLO50y78ginsP31oSkPQT78K23fingxRmnt7u0tHk2lnFk`}
+                description={(data as any[])[1].result.description}
+                posterUrl={`https://maroon-fashionable-warbler-188.mypinata.cloud/ipfs/${(data as any[])[1].result.ipfsHash.replace("ipfs://", "")}?pinataGatewayToken=gVQfpvbN3IXW52kARQuLO50y78ginsP31oSkPQT78K23fingxRmnt7u0tHk2lnFk`}
+                id = {id}
               />
             </div>
           </div>
@@ -163,7 +158,7 @@ const Player = () => {
           </div>
           <div className="flex w-full gap-5">
             {
-              data[2].result.map((video: video | any, index: number) => {
+              (data as any[])[2].result.map((video: video | any, index: number) => {
                 return (
                   <MovieCard key={index} video={video} />
                 )
