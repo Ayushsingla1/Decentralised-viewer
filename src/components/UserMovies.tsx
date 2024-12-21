@@ -4,6 +4,7 @@ import "../utils/loader.css"
 import "../utils/trouble.css"
 import Navbar from "./Navbar";
 import { UserMovieCard } from "./MovieCard";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const Testing = () => {
 
@@ -25,6 +26,13 @@ const Testing = () => {
             },
         ]
     })
+
+    if(!address) {
+        return <div className="flex flex-col h-screen w-screen justify-center items-center gap-y-10">
+          <div className="text-red-500 text-2xl">Please Connect Your Wallet First</div>
+          <div><ConnectButton/></div>
+        </div>
+    }
 
     if(error) {
         return <div className="flex w-screen h-screen justify-center items-center">
