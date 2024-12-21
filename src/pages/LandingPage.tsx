@@ -6,10 +6,11 @@ import { useAccount, useReadContract } from "wagmi";
 import { ABI, contractAddress } from "@/utils/contractDetails";
 import "../utils/loader.css";
 import Chatbox from "@/components/Chatbot";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
   const { address } = useAccount();
-
+  const navigate = useNavigate();
   const { data, isPending, error } = useReadContract({
     abi: ABI,
     address: contractAddress,
@@ -20,6 +21,10 @@ const LandingPage = () => {
   console.log("Data from contract:", data);
   console.log("Error:", error);
   console.log("Is Pending:", isPending);
+
+  const toHome = () => {
+    navigate('/home')
+  }
 
   if (isPending) {
     return (
@@ -48,7 +53,7 @@ const LandingPage = () => {
               Buy Movies and TV Shows in a decentralized way
             </p>
             <div className="flex justify-center gap-x-2">
-              <button className="font-hanalei text-3xl bg-[#616161] text-[#1EFF00] px-3 py-1 rounded">
+              <button onClick={toHome} className="font-hanalei text-3xl bg-[#616161] text-[#1EFF00] px-3 py-1 rounded">
                 Get Started
               </button>
             </div>

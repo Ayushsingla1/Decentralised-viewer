@@ -42,6 +42,9 @@ const Navbar = () => {
           <ul className="flex gap-10 px-10">
             <Link to='/home'><li>Home</li></Link>
             {
+              data === false ? (<Link to='/usermovies'><li>Your Movies</li></Link>) : (<></>)
+            }
+            {
               data === true ? (<Link to='/AdminHome'><li>AdminPage</li></Link>) : (<></>)
               
             }
