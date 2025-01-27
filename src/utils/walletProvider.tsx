@@ -4,7 +4,7 @@ import {
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
-import { mantleSepoliaTestnet } from 'viem/chains';
+import { telosTestnet } from 'viem/chains';
 import {
   QueryClientProvider,
   QueryClient,
@@ -12,11 +12,10 @@ import {
 import { darkTheme } from '@rainbow-me/rainbowkit';
 import React from 'react';
 
-
 const config = getDefaultConfig({
-  appName: 'NeoX',
-  projectId: '121',
-  chains: [mantleSepoliaTestnet],
+  appName: 'telos',
+  projectId: '4',
+  chains: [telosTestnet],
   ssr: false,
 });
 

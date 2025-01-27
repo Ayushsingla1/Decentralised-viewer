@@ -24,7 +24,7 @@ const LandingPage = () => {
       <div className="loader"></div>
     </div>
   }
-  if (error) {
+  else if (error) {
     return <div>{error}...</div>
   }
   else {

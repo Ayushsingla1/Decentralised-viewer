@@ -1,4 +1,4 @@
-export const contractAddress = "0x445A68840E6994D6745b071Ce295Edf5107806Aa"
+export const contractAddress = "0xe57ffcf477aAa175F4378248d3473Df50fCbc160"
 export const ABI = [
 	{
 		"inputs": [
@@ -1020,30 +1020,6 @@ export const ABI = [
 				"internalType": "address",
 				"name": "",
 				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "user",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "movieIndex",
-				"type": "uint256"
-			}
-		],
-		"name": "ownsMovie",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
 			}
 		],
 		"stateMutability": "view",

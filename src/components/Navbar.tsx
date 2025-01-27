@@ -2,11 +2,9 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Link } from "react-router-dom";
 import { useAccount, useReadContract } from "wagmi";
 import { ABI, contractAddress } from "@/utils/contractDetails";
-// import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
 
-  // const navigate = useNavigate()
   const { address } = useAccount();
 
   const { data, isPending, error }: { data: undefined | boolean, isPending: any, error: any } = useReadContract({
@@ -18,10 +16,6 @@ const Navbar = () => {
   })
 
   console.log(data)
-
-  // if (!data) {
-  //   navigate('/home')
-  // }
 
   if (isPending) {
     return <div>...loading</div>

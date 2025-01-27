@@ -49,10 +49,10 @@ const Payment = () => {
     <div className="flex flex-col">
       <Navbar />
       <div className=" relative w-full flex">
-        <img src={`https://maroon-fashionable-warbler-188.mypinata.cloud/ipfs/${(data as any[])[parseInt(id ? (id) : ("0"))].ipfsHash.replace("ipfs://", "")}?pinataGatewayToken=gVQfpvbN3IXW52kARQuLO50y78ginsP31oSkPQT78K23fingxRmnt7u0tHk2lnFk`} className="w-full blur-3xl h-[80vh]" />
+        <img src={`https://turquoise-certain-fox-148.mypinata.cloud/ipfs/${(data as any[])[parseInt(id ? (id) : ("0"))].ipfsHash}`} className="w-full blur-3xl h-[80vh]" />
         <div className="absolute h-[80vh] w-full flex">
           <div className="w-3/5 h-full flex justify-center items-center">
-            <img src={`https://maroon-fashionable-warbler-188.mypinata.cloud/ipfs/${(data as any[])[parseInt(id ? (id) : ("0"))].ipfsHash.replace("ipfs://", "")}?pinataGatewayToken=gVQfpvbN3IXW52kARQuLO50y78ginsP31oSkPQT78K23fingxRmnt7u0tHk2lnFk`} alt="" className="object-cover rounded-xl h-full w-11/12 m-auto" />
+            <img src={`https://turquoise-certain-fox-148.mypinata.cloud/ipfs/${(data as any[])[parseInt(id ? (id) : ("0"))].ipfsHash}`} alt="" className="object-cover rounded-xl h-full w-11/12 m-auto" />
           </div>
           <div className="w-2/5 flex justify-center items-center h-full">
             <div className="h-full flex items-center justify-center">
