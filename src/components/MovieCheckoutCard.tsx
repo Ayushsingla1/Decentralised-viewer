@@ -3,7 +3,7 @@ import { contractAddress, ABI } from "@/utils/contractDetails";
 import { useWriteContract } from "wagmi";
 import { useWaitForTransactionReceipt } from "wagmi";
 import "../utils/loader.css"
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {toast} from "react-toastify"
 
 type MovieCheckoutProps = {
