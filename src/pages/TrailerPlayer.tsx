@@ -46,8 +46,8 @@ const TrailerPlayer = () => {
     return (
       <div className="w-full h-full pb-10">
         <Navbar />
-        <div className="flex flex-col gap-y-12 justify-center items-center">
-          <div className="flex flex-col w-full relative items-center bg-[#292929] h-[140vh]">
+        <div className="flex flex-col gap-y-12  justify-center items-center">
+          <div className="flex flex-col w-full relative items-center bg-[#292929] h-[180vh]">
             <img src={`https://turquoise-certain-fox-148.mypinata.cloud/ipfs/${(data as any[])[1].result.ipfsHash.replace("ipfs://", "")}`} className="w-full absolute blur-3xl h-[90vh]" />
             <div className="flex pt-10 gap-y-6 flex-col absolute top-0 w-full justify-center items-center">
               <div className="flex gap-x-2 text-white justify-center items-center">

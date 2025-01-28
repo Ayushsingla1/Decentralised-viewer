@@ -56,7 +56,7 @@ const MovieCheckout: React.FC<MovieCheckoutProps> = ({
       <div className="max-w-md p-6 font-hanalei rounded-xl bg-[#C2C2C2] hover:bg-[#d6d6d6] hover:scale-105 transition-all ease-in-out text-white space-y-4">
         <h1 className="text-4xl blackStroke">MOVIE CHECKOUT</h1>
         <h2 className="text-3xl blackStroke">{title}</h2>
-        <p className="text-[#1EFF00] text-3xl blackStroke">{gas} Gwei</p>
+        <p className="text-[#1EFF00] text-3xl blackStroke">{gas} TLOS</p>
   
         <div className="text-left flex flex-col gap-y-3">
           <p>
