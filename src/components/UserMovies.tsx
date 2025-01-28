@@ -5,6 +5,7 @@ import "../utils/trouble.css"
 import Navbar from "./Navbar";
 import { UserMovieCard } from "./MovieCard";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useEffect } from "react";
 
 const Testing = () => {
 
@@ -26,6 +27,8 @@ const Testing = () => {
             },
         ]
     })
+
+    useEffect(() => {console.log(data)}, [data])
 
     if(!address) {
         return <div className="flex flex-col h-screen w-screen justify-center items-center gap-y-10">
@@ -66,8 +69,9 @@ const Testing = () => {
                 <div className="grid grid-cols-3 w-full gap-5 mt-5">
                     {(data as any[])[0].result.filter((item: any) => {
                         const id = item.movieId;
-                        return (data as any[])[1].result.find((movieId: any) => movieId === id);
+                        return (data as any[])[1].result.find((movieId: any) => { console.log(movieId, id); return movieId === id});
                     }).map((item: any, index: number) => {
+                        console.log(item)
                         return <UserMovieCard
                                 key={index}
                                 video={{

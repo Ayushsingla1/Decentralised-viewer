@@ -9,10 +9,12 @@ import TrailerPlayer from "./pages/TrailerPlayer";
 import LandingPage from "./pages/LandingPage";
 import MovieUpload from "./pages/MovieUpload";
 import Testing from "./components/UserMovies";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <div className="min-h-screen w-full bg-[#3b3b3b]">
+      <ToastContainer/>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
