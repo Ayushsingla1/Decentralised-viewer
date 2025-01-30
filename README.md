@@ -1,12 +1,12 @@
 # Web3TV
 
-Web3TV is a decentralized movie platform built on the **Mantle APAC Chain**, developed during the **Gaia Autonomous Hackathon**. The platform offers a secure and fair way to upload, purchase, and watch movies using blockchain and NFT technology. 
+Web3TV is a decentralized movie platform built on the **Telos EVM Chain**, developed during the **Telos Mini Hackathon**. The platform offers a secure and fair way to upload, purchase, and watch movies using blockchain and NFT technology. 
 
 ## Key Features
 
 ### Admin Side
 1. **Movie Encryption & Upload:** Movies are encrypted using **CryptoJS** for added security and uploaded to the **IPFS** network.
-2. **Blockchain Integration:** Metadata and movie details are stored on the **Mantle APAC Chain** after a transaction confirmation via MetaMask.
+2. **Blockchain Integration:** Metadata and movie details are stored on the **Telos EVM Chain** after a transaction confirmation via MetaMask.
 
 ### User Side
 1. **NFT-based Ownership:** Users can purchase movies and receive an **NFT** as proof of ownership, enabling access to the content.
@@ -55,7 +55,7 @@ Web3TV is a decentralized movie platform built on the **Mantle APAC Chain**, dev
    - Users can interact with the **Gaia.ai-powered chatbot** to get detailed information about movies, including genres, cast, and ratings.
 
 ## Tech Stack
-- **Blockchain:** Mantle APAC Chain
+- **Blockchain:** Telos EVM Chain
 - **Storage:** IPFS
 - **Encryption:** CryptoJS
 - **Payments & Wallet:** MetaMask
