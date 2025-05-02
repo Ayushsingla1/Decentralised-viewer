@@ -1,19 +1,12 @@
 import MovieCheckout from "../components/MovieCheckoutCard";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useAccount, useReadContract } from "wagmi";
-import { contractAddress, ABI } from "@/utils/contractDetails";
+import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useParams } from "react-router-dom";
 import "../utils/loader.css"
-
-interface posterData {
-  movieId: number,
-  name: string;
-  description: string;
-  ipfsHash: string;
-  price: number;
-}
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const Payment = () => {
 
@@ -22,11 +15,9 @@ const Payment = () => {
 
   console.log(address)
 
-  const { data, isPending }: { data: posterData[] | undefined, isPending: boolean | undefined, isError: any } = useReadContract({
-    abi: ABI,
-    address: contractAddress,
-    functionName: "getAllPosters",
-    args: []
+  const {data , isPending} = useQuery({
+    queryFn : async() => {return (await axios.get('http://localhost:3001/api/v1/getAllPosters')).data},
+    queryKey : ["Fetching Poster"]
   })
 
   console.log(data)
@@ -49,19 +40,19 @@ const Payment = () => {
     <div className="flex flex-col">
       <Navbar />
       <div className=" relative w-full flex">
-        <img src={`https://turquoise-certain-fox-148.mypinata.cloud/ipfs/${(data as any[])[parseInt(id ? (id) : ("0"))].ipfsHash}`} className="w-full blur-3xl h-[80vh]" />
+        <img src={`https://turquoise-certain-fox-148.mypinata.cloud/ipfs/${(data as any[])[parseInt(id ? (id) : ("0"))][3]}`} className="w-full blur-3xl h-[80vh]" />
         <div className="absolute h-[80vh] w-full flex">
           <div className="w-3/5 h-full flex justify-center items-center">
-            <img src={`https://turquoise-certain-fox-148.mypinata.cloud/ipfs/${(data as any[])[parseInt(id ? (id) : ("0"))].ipfsHash}`} alt="" className="object-cover rounded-xl h-full w-11/12 m-auto" />
+            <img src={`https://turquoise-certain-fox-148.mypinata.cloud/ipfs/${(data as any[])[parseInt(id ? (id) : ("0"))][3]}`} alt="" className="object-cover rounded-xl h-full w-11/12 m-auto" />
           </div>
           <div className="w-2/5 flex justify-center items-center h-full">
             <div className="h-full flex items-center justify-center">
               <MovieCheckout
-                title={data === undefined || id === undefined ? ("") : (data[parseInt(id)].name)}
-                gas={parseInt((data as any[])[parseInt(id ? (id) : ("0"))].price)}
-                owner="0xb8B0C320ED4b7F9Fda8A2408F4C4044Bc5C8Bf41"
-                description={data === undefined || id === undefined ? ("") : data[parseInt(id)].description}
-                buyers={1230000}
+                title={data === undefined || id === undefined ? ("") : (data[parseInt(id)][1])}
+                gas={parseInt((data as any[])[parseInt(id ? (id) : ("0"))][4])}
+                owner="0x7F6038653A0358Ad2835cE4DF002ba15db052395"
+                description={data === undefined || id === undefined ? ("") : data[parseInt(id)][2]}
+                buyers={123}
                 id={id === undefined ? (0) : (parseInt(id))}
               />
             </div>

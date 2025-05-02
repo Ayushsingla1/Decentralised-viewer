@@ -2,11 +2,12 @@ import Navbar from "@/components/Navbar"
 import { useState } from "react"
 import FileUploadField from "./FileUploadField";
 import axios from "axios";
-import { useWriteContract, useWaitForTransactionReceipt, useAccount } from "wagmi";
+import { useWalletClient } from "wagmi";
 import { ABI, contractAddress } from "@/utils/contractDetails";
 import * as cryptojs from 'crypto-js';
-import { LoaderCircle, CheckCircle2, XCircle } from 'lucide-react';
+import { LoaderCircle, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
+import { encodeFunctionData } from "viem";
 
 interface MovieDetails {
     movieName: string;
@@ -51,7 +52,9 @@ const MovieUpload = () => {
         genre: ""
     });
 
-    const {address} = useAccount();
+    const {data : walletClient} = useWalletClient();
+
+    // const {address} = useAccount();
 
     const [status, setStatus] = useState<string>("");
     const [, setEncryptedFile] = useState<Blob | null>(null);
@@ -62,7 +65,8 @@ const MovieUpload = () => {
         poster: false
     });
     const [isUploading, setIsUploading] = useState(false);
-
+    const [isSuccess , setIsSuccess] = useState(false);
+    const [isPending, setIsPending] = useState(false);
     const password = import.meta.env.VITE_REACT_MOVIE_PASSWORD || '';
 
     const [previews, setPreviews] = useState<PreviewState>({
@@ -113,9 +117,6 @@ const MovieUpload = () => {
             }));
         }
     }
-
-    const { writeContract, isPending, data: hash } = useWriteContract();
-    const { isSuccess, isError } = useWaitForTransactionReceipt({ hash });
 
     const encryptFile = (fileToEncrypt: File, userPassword: string): Promise<Blob> => {
         return new Promise((resolve, reject) => {
@@ -191,22 +192,36 @@ const MovieUpload = () => {
             const trailerHash = await uploadToPinata(files.trailer, 'trailer');
             const posterHash = await uploadToPinata(files.poster, 'poster');
 
+            console.log(details);
             console.log(movieHash,trailerHash,posterHash)
-            const res = await writeContract({
-                abi: ABI,
-                address: contractAddress,
-                functionName: "addMovie",
-                args: [
-                    details.movieName,
-                    details.movieDescription,
-                    details.price,
-                    movieHash.replace("ipfs://", ""),
-                    trailerHash.replace("ipfs://", ""),
-                    posterHash.replace("ipfs://", "")
-                ],
-                account : address
-            });
-            console.log(res);
+
+            setIsPending(true);
+           
+            const data = encodeFunctionData({
+                abi : ABI,
+                functionName : "addMovie",
+                args : [details.movieName,details.movieDescription,details.price,movieHash.replace("ipfs://",""),trailerHash.replace("ipfs://",""),posterHash.replace("ipfs://","")]
+            })
+
+            const [account] = await walletClient?.getAddresses()!;
+
+            const tx = {
+                to : contractAddress,
+                data,
+                from : account
+            }
+
+            //@ts-ignore
+            const hash = await walletClient?.sendTransaction(tx);
+
+            
+            if(hash){
+                setIsPending(false)
+                setIsSuccess(true);
+            }
+
+            console.log(hash);
+
             console.log("done transaction")
         } catch (error) {
             console.error('Upload error:', error);
@@ -241,13 +256,13 @@ const MovieUpload = () => {
     }
 
     // Render loading, error, or success states
-    if (isError) return (
-        <div className="flex flex-col items-center justify-center h-screen text-red-500">
-            <XCircle className="w-16 h-16 mb-4" />
-            <p>Error while uploading</p>
-            <div><button onClick={() => navigate('/home')}>Home</button></div>
-        </div>
-    );
+    // if (isError) return (
+    //     <div className="flex flex-col items-center justify-center h-screen text-red-500">
+    //         <XCircle className="w-16 h-16 mb-4" />
+    //         <p>Error while uploading</p>
+    //         <div><button onClick={() => navigate('/home')}>Home</button></div>
+    //     </div>
+    // );
 
     if (isSuccess) return (
         <div className="flex flex-col items-center justify-center h-screen text-green-500">

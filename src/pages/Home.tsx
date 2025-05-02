@@ -2,22 +2,18 @@ import Footer from "@/components/Footer";
 import MovieCard from "@/components/MovieCard";
 import Navbar from "@/components/Navbar";
 import image from "../assets/Group 1.png";
-import { ABI, contractAddress } from "@/utils/contractDetails";
-import { useReadContract } from "wagmi";
 import "../utils/loader.css"
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 
 const LandingPage = () => {
 
 
-  const { data, isPending, error }: { data: any[] | undefined, isPending: any, error: any } = useReadContract({
-    abi: ABI,
-    address: contractAddress,
-    functionName: "getAllPosters",
-    args: [],
+  const { data, isPending, error } = useQuery({
+    queryFn : async() => {return (await axios.get('http://localhost:3001/api/v1/getAllPosters')).data},
+    queryKey : ["Fetching posters"],
   })
-
-  console.log(data);
 
   if (isPending) {
     return <div className="flex w-screen h-screen justify-center items-center">
@@ -25,7 +21,7 @@ const LandingPage = () => {
     </div>
   }
   else if (error) {
-    return <div>{error}...</div>
+    return <div>hello...</div>
   }
   else {
     return (

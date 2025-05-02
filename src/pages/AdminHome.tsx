@@ -2,30 +2,20 @@ import Footer from "@/components/Footer";
 import MovieCard from "@/components/MovieCard";
 import Navbar from "@/components/Navbar";
 import image from "../assets/Group 1.png";
-import { useAccount, useReadContract } from "wagmi";
+import { useAccount } from "wagmi";
 import { video } from "@/DummyData/videosData";
-import { ABI, contractAddress } from "@/utils/contractDetails";
 import { useNavigate } from "react-router-dom";
 import "../utils/loader.css"
-
-interface posterData {
-  movieId: number,
-  name: string;
-  description: string;
-  ipfsHash: string;
-  price: number;
-}
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const AdminHome = () => {
 
   const connectAccount = useAccount();
   const navigate = useNavigate();
-
-  const { data, isPending }: { data: posterData[] | undefined, isPending: boolean | undefined } = useReadContract({
-    abi: ABI,
-    address: contractAddress,
-    functionName: "getAllPosters",
-    args: []
+  const { data , isPending } = useQuery({
+    queryFn : async() => {return (await axios.get('http://localhost:3001/api/v1/getAllTrailers')).data},
+    queryKey : ["Fetching posters"]
   })
 
   if (isPending) {

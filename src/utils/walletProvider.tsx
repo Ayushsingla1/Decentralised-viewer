@@ -1,32 +1,41 @@
-import '@rainbow-me/rainbowkit/styles.css';
-import {
-  getDefaultConfig,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
-import { telosTestnet } from 'viem/chains';
-import {
-  QueryClientProvider,
-  QueryClient,
-} from "@tanstack/react-query";
-import { darkTheme } from '@rainbow-me/rainbowkit';
-import React from 'react';
+import { WagmiProvider, createConfig, http } from "wagmi";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ConnectKitProvider, getDefaultConfig } from "connectkit";
+import React from "react";
+import { type Chain } from "viem";
 
-const config = getDefaultConfig({
-  appName: 'telos',
-  projectId: '4',
-  chains: [telosTestnet],
-  ssr: false,
-});
+export const Pharos: Chain = {
+  id: 50002,
+  name: "Pharos",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Pharos",
+    symbol: "PTT",
+  },
+  rpcUrls: {
+    default: { http :  ["https://devnet.dplabs-internal.com"] },
+  },
+  testnet: true,
+};
+
+export const config = createConfig(
+  getDefaultConfig({
+    chains: [Pharos],
+    transports: {
+      [Pharos.id]: http("https://devnet.dplabs-internal.com"),
+    },
+    walletConnectProjectId: "123",
+    appName: "StatusDAO",
+  }),
+);
 
 const queryClient = new QueryClient();
-const WalletProvider = ({children} : {children : React.ReactNode}) => {
+
+const WalletProvider = ({ children } : {children : React.ReactNode}) => {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={darkTheme({borderRadius: 'small',accentColor: '#7b3fe4',overlayBlur: 'small',})}>
-          {children}
-        </RainbowKitProvider>
+        <ConnectKitProvider>{children}</ConnectKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

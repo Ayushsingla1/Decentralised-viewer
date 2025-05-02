@@ -24,23 +24,29 @@ const MovieCheckout: React.FC<MovieCheckoutProps> = ({
   id
 }) => {
 
-  const { writeContract, isPending, data: hash } = useWriteContract();
+
+  console.log(title , gas , owner , description , buyers , id)
+
+  const { writeContract, isPending, data: hash } = useWriteContract({});
   const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({
     hash,
   });
+
+  console.log(hash)
 
   const navigate = useNavigate();
   
   const handleBuy = async (e: any) => {
     e.preventDefault();
-    const res = await writeContract({
+
+    console.log("calling it")
+    writeContract({
       abi: ABI,
       address: contractAddress,
       functionName: "purchaseMovie",
       args: [id],
-      value: 40000n,
+      value: 4000000000n,
     });
-    console.log("response is : " , res);
   };
 
   if (isSuccess) {

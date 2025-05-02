@@ -3,18 +3,17 @@ import Navbar from "../components/Navbar";
 import MovieInfo from "../components/MovieInfo";
 import { video } from "@/DummyData/videosData";
 import MovieCard from "@/components/MovieCard";
-import { useAccount, useReadContracts } from "wagmi";
-import { ABI, contractAddress } from "@/utils/contractDetails";
+import { useAccount } from "wagmi";
 import * as cryptojs from 'crypto-js';
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";
 import "../utils/loader.css"
+import { useQueries } from "@tanstack/react-query";
+import axios from "axios";
 
 const Player = () => {
 
   const { address } = useAccount();
-  // const navigate = useNavigate();
   let { id } = useParams();
 
 
@@ -24,34 +23,22 @@ const Player = () => {
 
   const password = import.meta.env.VITE_REACT_MOVIE_PASSWORD;
 
-  const { data, isPending, isError } = useReadContracts({
-    contracts: [
-      {
-        abi: ABI,
-        address: contractAddress,
-        args: [id],
-        functionName: "getMovie"
-      },
-      {
-        abi: ABI,
-        address: contractAddress,
-        args: [id],
-        functionName: "getPoster"
-      },
-      {
-        abi: ABI,
-        address: contractAddress,
-        functionName: "getAllPosters",
-        args: [],
-      },
-      {
-        abi: ABI,
-        address: contractAddress,
-        functionName: "ownsMovie",
-        args: [address, id]
-      }
+  const userQueries = useQueries({
+    queries : [
+      {queryKey : ["Fetching Movie"] , queryFn : async() => {return (await axios.get('http://localhost:3001/api/v1/getMovie',{
+        params : {id}
+      })).data}},
+      {queryKey : ["getPoster"] , queryFn : async() => {return (await axios.get('http://localhost:3001/api/v1/getPoster',{
+        params : {id}
+      })).data}},
+      {queryKey : ["getAllPosters"] , queryFn : async() => {return (await axios.get('http://localhost:3001/api/v1/getAllPosters',{
+        params : {id}
+      })).data}},
+      {queryKey : ["Owns Movies"], queryFn : async() => {return (await axios.get('http://localhost:3001/api/v1/ownsMovie',{
+        params : {address,id}
+      }))}}
     ]
-  });
+  })
 
   const decryptAndFetchFile = async (ipfsHash: string, userPassword: string) => {
     try {
@@ -91,21 +78,21 @@ const Player = () => {
 
   useEffect(() => {
 
-    if (!isPending && !decryptedVideoUrl && data && (data as any[])[0]?.result?.ipfsHash) {
-      console.log("user movies is : ", data[3])
-      const ipfsHash = (data as any[])[0].result.ipfsHash;
+    if (!userQueries[3].isPending && !decryptedVideoUrl && userQueries && (userQueries as any[])[0]?.data.data[3]) {
+      console.log("user movies is : ", userQueries[3])
+      const ipfsHash = (userQueries as any[])[0].data.data[3];
 
       decryptAndFetchFile(ipfsHash, password);
     }
-  }, [isPending, decryptedVideoUrl, data]);
+  }, [userQueries[0].isPending || userQueries[1].isPending || userQueries[2].isPending || userQueries[3].isPending, decryptedVideoUrl, userQueries]);
 
-  if (isPending) {
+  if (userQueries[0].isPending || userQueries[1].isPending || userQueries[2].isPending || userQueries[3].isPending) {
     return <div className="flex w-screen h-screen justify-center items-center">
       <div className="loader"></div>
     </div>
   }
 
-  if (isError || error) {
+  if (userQueries[0].isError || userQueries[1].isError || userQueries[2].isError || userQueries[3].isError) {
     return (
       <div className="text-red-500 text-center text-2xl">
         {error || "An error occurred while loading the video"}
@@ -118,13 +105,13 @@ const Player = () => {
       <Navbar />
       <div className="flex flex-col gap-y-12 justify-center items-center">
         <div className="flex flex-col w-full relative items-center bg-[#292929] h-[180vh]">
-          <img src={`https://turquoise-certain-fox-148.mypinata.cloud/ipfs/${(data as any[])[1].result.ipfsHash}`} className="w-full absolute blur-3xl h-[90vh]" alt="Background Blur" />
+          <img src={`https://turquoise-certain-fox-148.mypinata.cloud/ipfs/${(userQueries as any[])[1].data.data[3]}`} className="w-full absolute blur-3xl h-[90vh]" alt="Background Blur" />
           <div className="flex pt-10 gap-y-6 flex-col absolute top-0 w-full justify-center items-center">
             <div className="flex gap-x-2 text-white justify-center items-center">
-              <span className="font-hanalei text-4xl">{(data as any[])[1].result.name}</span>
+              <span className="font-hanalei text-4xl">{(userQueries as any[])[1].data.data[1]}</span>
               <div className="border border-[#1EFF00] rounded-full px-3 py-1">
                 <span className="font-hanalei text-xl">Owner:</span>
-                <span className="font-hanalei text-xl">0xb8B0C320ED4b7F9Fda8A2408F4C4044Bc5C8Bf41</span>
+                <span className="font-hanalei text-xl">0x7F6038653A0358Ad2835cE4DF002ba15db052395</span>
               </div>
             </div>
             <div>
@@ -141,12 +128,12 @@ const Player = () => {
 
             <div className="w-full justify-center items-center flex bottom-[0] font-hanalei">
               <MovieInfo
-                title={(data as any[])[1].result.name}
-                owner="0xb8B0C320ED4b7F9Fda8A2408F4C4044Bc5C8Bf41"
-                amount={(data as any[])[1].result.price.toString()}
+                title={(userQueries as any[])[1].data.data[1]}
+                owner="0x7F6038653A0358Ad2835cE4DF002ba15db052395"
+                amount={(userQueries as any[])[1].data.data[4]}
                 imdbRating="8.8/10"
-                description={(data as any[])[1].result.description}
-                posterUrl={`https://turquoise-certain-fox-148.mypinata.cloud/ipfs/${(data as any[])[1].result.ipfsHash}?`}
+                description={(userQueries as any[])[1].result.description}
+                posterUrl={`https://turquoise-certain-fox-148.mypinata.cloud/ipfs/${(userQueries as any[])[1].data.data[3]}?`}
                 id = {id}
               />
             </div>
@@ -158,7 +145,7 @@ const Player = () => {
           </div>
           <div className="flex w-full gap-5">
             {
-              (data as any[])[2].result.map((video: video | any, index: number) => {
+              (userQueries as any[])[2].data.data.map((video: video | any, index: number) => {
                 return (
                   <MovieCard key={index} video={video} />
                 )

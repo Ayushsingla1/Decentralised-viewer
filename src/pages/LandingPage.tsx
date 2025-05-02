@@ -2,21 +2,30 @@ import Footer from "@/components/Footer";
 import MovieCard from "@/components/MovieCard";
 import Navbar from "@/components/Navbar";
 import image from "../assets/Group 1.png";
-import { useAccount, useReadContract } from "wagmi";
-import { ABI, contractAddress } from "@/utils/contractDetails";
+import { useAccount } from "wagmi";
 import "../utils/loader.css";
 import Chatbox from "@/components/Chatbot";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const LandingPage = () => {
   const { address } = useAccount();
+
+  console.log(address);
   const navigate = useNavigate();
-  const { data, isPending, error } = useReadContract({
-    abi: ABI,
-    address: contractAddress,
-    functionName: "getAllPosters",
-    account : address
-  });
+
+
+  const myfxn = async() => {
+    const res = await axios.get('http://localhost:3001/api/v1/getAllPosters');
+    console.log(res.data.res);
+    return res.data;
+  }
+
+  const { data, isPending, error } = useQuery({
+    queryFn : myfxn,
+    queryKey : ["fetcher"]
+  })
 
   console.log("Data from contract:", data);
   console.log("Error:", error);
@@ -73,13 +82,7 @@ const LandingPage = () => {
             {(data as any[])?.map((poster, index) => (
               <MovieCard
                 key={index}
-                video={{
-                  movieId: poster.movieId.toString(),
-                  name: poster.name,
-                  description: poster.description,
-                  ipfsHash: poster.ipfsHash,
-                  price: poster.price.toString(),
-                }}
+                video={poster}
               />
             ))}
           </div>
