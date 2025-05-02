@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { contractAddress, ABI } from "@/utils/contractDetails";
-import { useWriteContract } from "wagmi";
-import { useWaitForTransactionReceipt } from "wagmi";
+import { useWalletClient } from "wagmi";
 import "../utils/loader.css"
 import { useNavigate } from "react-router-dom";
 import {toast} from "react-toastify"
+import { encodeFunctionData } from "viem";
 
 type MovieCheckoutProps = {
   title: string;
@@ -24,29 +24,50 @@ const MovieCheckout: React.FC<MovieCheckoutProps> = ({
   id
 }) => {
 
-
   console.log(title , gas , owner , description , buyers , id)
 
-  const { writeContract, isPending, data: hash } = useWriteContract({});
-  const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({
-    hash,
-  });
-
-  console.log(hash)
+  const [isSuccess , setIsSuccess] = useState(false);
+  const [isPending , setIsPending] = useState(false);
+  const [isError , setIsError] = useState(false);
+  const {data : walletClient} = useWalletClient();
 
   const navigate = useNavigate();
   
   const handleBuy = async (e: any) => {
     e.preventDefault();
 
+    setIsPending(true);
     console.log("calling it")
-    writeContract({
-      abi: ABI,
-      address: contractAddress,
-      functionName: "purchaseMovie",
-      args: [id],
-      value: 4000000000n,
-    });
+
+    const data = encodeFunctionData({
+      abi : ABI,
+      functionName : "purchaseMovie",
+      args : [id]
+    })
+
+    const [account] =await walletClient?.getAddresses()!;
+
+    const tx = {
+      to : contractAddress,
+      data,
+      account,
+      value : 400000000000000000n,
+      gas : 400000000n
+    }
+
+    const hash = await walletClient?.sendTransaction(tx);
+
+    // const success = await walletClient.sen
+
+    console.log(hash);
+
+    if(hash !== undefined){
+      setIsPending(false);
+      setIsSuccess(true);
+    }
+    else{
+      setIsError(true);
+    }
   };
 
   if (isSuccess) {
@@ -95,10 +116,10 @@ const MovieCheckout: React.FC<MovieCheckoutProps> = ({
 
       <button
         className="bg-green-600 w-full blackStroke hover:bg-green-500 px-4 py-2 rounded-full text-white text-2xl font-bold"
-        disabled={isLoading}
+        disabled={isPending}
         onClick={handleBuy}
       >
-        {isLoading ? "Transaction in process..." : "Buy Now"}
+        {isPending ? "Transaction in process..." : "Buy Now"}
       </button>
     </div>
   );

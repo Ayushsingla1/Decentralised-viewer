@@ -39,6 +39,7 @@ const theme = {
   userFontColor: '#4a4a4a',
 };
 
+// Global chat history
 let chatHistory: ChatMessage[] = [];
 
 class DBPedia extends Component<DBPediaProps, DBPediaState> {
@@ -58,61 +59,69 @@ class DBPedia extends Component<DBPediaProps, DBPediaState> {
     this.searchDBPedia();
   }
 
-  searchDBPedia() {
+  async searchDBPedia() {
     const { steps, triggerNextStep } = this.props;
     const search = steps.search.value;
-    const limitedHistory = chatHistory.slice(-5);
+    const limitedHistory = chatHistory.slice(-5); // Keep only the last 5 messages
 
     this.setState({ loading: true, result: '' });
+
     const updatedHistory: ChatMessage[] = [
       ...limitedHistory,
       { role: 'user' as const, content: search },
     ];
 
-    axios
-      .post(
-        'https://autonomous-backend.onrender.com/chatbot',
-        {
-          message: search,
-          conversation: updatedHistory,
-        },
+    try {
+      const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`;
+
+      const requestBody = {
+        contents: updatedHistory.map((msg) => ({
+          role: msg.role,
+          parts: [{ text: msg.content }],
+        })),
+      };
+
+      const response = await axios.post(
+        geminiEndpoint,
+        requestBody,
         { headers: { 'Content-Type': 'application/json' } }
-      )
-      .then((response) => {
-        const reply = response.data;
+      );
 
-        const newHistory: ChatMessage[] = [
-          ...updatedHistory,
-          { role: 'assistant' as const, content: reply }
-        ];
-        chatHistory = newHistory;
+      const reply = response.data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.';
 
-        this.setState({
-          loading: false,
-          result: reply,
-          conversationHistory: newHistory,
-        });
+      const newHistory: ChatMessage[] = [
+        ...updatedHistory,
+        { role: 'assistant' as const, content: reply },
+      ];
+      chatHistory = newHistory;
 
-        triggerNextStep();
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        const errorMessage = 'An error occurred while fetching data.';
-
-        const newHistory: ChatMessage[] = [
-          ...updatedHistory,
-          { role: 'assistant' as const, content: errorMessage }
-        ];
-        chatHistory = newHistory;
-        
-        this.setState({
-          loading: false,
-          result: errorMessage,
-          conversationHistory: newHistory,
-        });
-        
-        triggerNextStep();
+      this.setState({
+        loading: false,
+        result: reply,
+        conversationHistory: newHistory,
       });
+
+      triggerNextStep();
+    } catch (error) {
+      console.error('Gemini API Error:', error);
+
+      const errorMessage = 'An error occurred while fetching data.';
+
+      const newHistory: ChatMessage[] = [
+        ...updatedHistory,
+        { role: 'assistant' as const, content: errorMessage },
+      ];
+      chatHistory = newHistory;
+
+      this.setState({
+        loading: false,
+        result: errorMessage,
+        conversationHistory: newHistory,
+      });
+
+      triggerNextStep();
+    }
   }
 
   render() {

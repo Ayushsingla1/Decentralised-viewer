@@ -24,8 +24,8 @@ export const config = createConfig(
     transports: {
       [Pharos.id]: http("https://devnet.dplabs-internal.com"),
     },
-    walletConnectProjectId: "123",
-    appName: "StatusDAO",
+    walletConnectProjectId: "0b11dbd93f0ffdd9465dd6cb2f731e71",
+    appName: "WEB3TV",
   }),
 );
 

@@ -1,4 +1,3 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { ConnectKitButton } from "connectkit";
 import { Link } from "react-router-dom";
 import { useAccount } from "wagmi";
@@ -29,11 +28,6 @@ const Navbar = () => {
           }
           <Link to='/player'><li>Player</li></Link>
         </ul>
-        {/* <ConnectButton
-          chainStatus="icon"
-          showBalance={false}
-          accountStatus="address"
-        /> */}
         <ConnectKitButton/>
       </div>
     </div>

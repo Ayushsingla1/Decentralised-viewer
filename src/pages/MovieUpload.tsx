@@ -38,8 +38,6 @@ interface UploadProgress {
     poster: boolean;
 }
 
-
-
 const MovieUpload = () => {
 
     const navigate = useNavigate();
@@ -53,8 +51,6 @@ const MovieUpload = () => {
     });
 
     const {data : walletClient} = useWalletClient();
-
-    // const {address} = useAccount();
 
     const [status, setStatus] = useState<string>("");
     const [, setEncryptedFile] = useState<Blob | null>(null);
@@ -126,7 +122,6 @@ const MovieUpload = () => {
                     const base64data = btoa(
                         new Uint8Array(e.target?.result as ArrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
                     );
-
                     const encrypted = cryptojs.AES.encrypt(base64data, userPassword).toString();
 
                     const encryptedBlob = new Blob([encrypted], { type: 'text/plain' });
@@ -153,14 +148,20 @@ const MovieUpload = () => {
             const pinataOptions = JSON.stringify({ cidVersion: 1 });
             formData.append('pinataOptions', pinataOptions);
 
+            console.log(import.meta.env.VITE_REACT_JWT_SECRET);
+
+            console.log("calling the uplaoder")
+
             const response = await axios.post(
                 'https://api.pinata.cloud/pinning/pinFileToIPFS',
                 formData,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
-                        'Authorization': `Bearer ${import.meta.env.VITE_REACT_JWT_SECRET}`
-                    }
+                        'Content-Type': `multipart/form-data`,
+                        'Authorization': `Bearer ${import.meta.env.VITE_REACT_JWT_SECRET}`,
+                        'pinata_api_key': import.meta.env.VITE_REACT_JWT_KEY,
+                    },
+                    maxBodyLength : Infinity
                 }
             );
 
@@ -254,15 +255,6 @@ const MovieUpload = () => {
             throw error;
         }
     }
-
-    // Render loading, error, or success states
-    // if (isError) return (
-    //     <div className="flex flex-col items-center justify-center h-screen text-red-500">
-    //         <XCircle className="w-16 h-16 mb-4" />
-    //         <p>Error while uploading</p>
-    //         <div><button onClick={() => navigate('/home')}>Home</button></div>
-    //     </div>
-    // );
 
     if (isSuccess) return (
         <div className="flex flex-col items-center justify-center h-screen text-green-500">

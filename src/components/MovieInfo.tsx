@@ -46,7 +46,7 @@ const MovieInfo: React.FC<MovieInfoProps> = ({
         </div>
 
         <div className="mb-2">
-          <span className="font-bold text-green-500">Amount:</span> {amount} TLOS
+          <span className="font-bold text-green-500">Amount:</span> {amount} PTT
         </div>
 
         <div className="mb-4">
